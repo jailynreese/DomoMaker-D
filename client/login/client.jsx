@@ -1,5 +1,3 @@
-import { sign } from "crypto";
-
 const handleLogin = (e) => {
     e.preventDefault();
 
@@ -12,7 +10,7 @@ const handleLogin = (e) => {
 
     console.log($("input[name=_csrf]").val());
 
-    sendAjax('POST', $("#loginForm").attr("action"), $("LoginForm").serialize(), redirect);
+    sendAjax('POST', $("#loginForm").attr("action"), $("loginForm").serialize(), redirect);
 
     return false;
 };
@@ -22,8 +20,8 @@ const handleSignup = (e) => {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
 
-    if ($("#user").val() == '' || $("#pass").val() == '') {
-        handleError("RAWR! Passwords do not match");
+    if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
+        handleError("RAWR! All fields are required");
         return false;
     }
 
