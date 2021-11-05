@@ -29,19 +29,19 @@ let redisURL = {
 };
 
 let redisPASS = 'ODXETKf3K8uYbilgdGkbX8V19mUv2oyx';
-if(process.env.REDISCLOUD_URL){
+if (process.env.REDISCLOUD_URL) {
   redisURL = url.parse(process.env.REDISCLOUD_URL);
-  [,redisPass] = redisURL.auth.split(':');
+  [, redisPASS] = redisURL.auth.split(':');
 }
 
-let redisClient = redis.createClient({
+const redisClient = redis.createClient({
   host: redisURL.hostname,
   port: redisURL.port,
   password: redisPASS,
-})
+});
 
 // pull in our routes
-const router = require('./router.js');
+const router = require('./router');
 
 const app = express();
 app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted/`)));
@@ -51,7 +51,7 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 app.use(session({
-  key:'sessionid',
+  key: 'sessionid',
   store: new RedisStore({
     client: redisClient,
   }),
@@ -68,12 +68,12 @@ app.set('views', `${__dirname}/../views`);
 app.disable('x=powered-by');
 app.use(cookieParser());
 
-//csrf must come AFTER app.use(cookieParser());
-//and app.use(session({....}));
-//should come BEFORE the router
+// csrf must come AFTER app.use(cookieParser());
+// and app.use(session({....}));
+// should come BEFORE the router
 app.use(csrf());
 app.use((err, req, res, next) => {
-  if(err.code !== 'EBADCSRFTOKEN') return next(err);
+  if (err.code !== 'EBADCSRFTOKEN') return next(err);
 
   console.log('Missing CSRF token');
   return false;

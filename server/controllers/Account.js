@@ -37,53 +37,19 @@ const login = (request, response) => {
   });
 };
 
-const signup = (request, response) => {
+const getToken = (request, response) => {
   const req = request;
   const res = response;
 
-  // cast to strings to cover up some security flaws
-  req.body.username = `${req.body.username}`;
-  req.body.pass = `${req.body.pass}`;
-  req.body.pass2 = `${req.body.pass2}`;
+  const csrfJSON = {
+    csrfToken: req.csrfToken(),
+  };
 
-  if (!req.body.username || !req.body.pass || !req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! All fields are required' });
-  }
-
-  if (req.body.pass !== req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! Passwords do not match' });
-  }
-
-  return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
-    const accountData = {
-      username: req.body.username,
-      salt,
-      password: hash,
-    };
-
-    const newAccount = new Account.AccountModel(accountData);
-
-    const savePromise = newAccount.save();
-
-    savePromise.then(() => {
-      req.session.account = Account.AccountModel.toAPI(newAccount);
-      res.json({ redirect: '/maker' });
-    });
-
-    savePromise.catch((err) => {
-      console.log(err);
-
-      if (err.code === 11000) {
-        return res.status(400).json({ error: 'Username already in use ' });
-      }
-
-      return res.status(400).json({ error: 'An error occurred' });
-    });
-  });
+  res.json(csrfJSON);
 };
 
 module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signupPage = signupPage;
-module.exports.signup = signup;
+module.exports.getToken = getToken;
