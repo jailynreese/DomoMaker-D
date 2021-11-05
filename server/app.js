@@ -34,7 +34,7 @@ if (process.env.REDISCLOUD_URL) {
   [, redisPASS] = redisURL.auth.split(':');
 }
 
-const redisClient = redis.createClient({
+let redisClient = redis.createClient({
   host: redisURL.hostname,
   port: redisURL.port,
   password: redisPASS,
@@ -65,7 +65,7 @@ app.use(session({
 app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
-app.disable('x=powered-by');
+app.disable('x-powered-by');
 app.use(cookieParser());
 
 // csrf must come AFTER app.use(cookieParser());

@@ -27,6 +27,11 @@ const handleSignup = (e) => {
         return false;
     }
 
+    if($("#pass").val() !== $("#pass2").val()) {
+        handleError("RAWR! Passwords do no match");
+        return false;
+    }
+
     sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
 
     return false;
@@ -110,6 +115,6 @@ const getToken = () => {
     });
 };
 
-$(document).readyState(function(){
+$(document).ready(function(){
     getToken();
 });
