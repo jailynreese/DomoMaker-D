@@ -1,10 +1,8 @@
 "use strict";
 
-var _models = require("../../server/models");
-
 var handleDomo = function handleDomo(e) {
   e.preventDefault();
-  $("domoMessage").animate({
+  $("#domoMessage").animate({
     width: 'hide'
   }, 350);
 
@@ -53,7 +51,7 @@ var DomoForm = function DomoForm(props) {
 };
 
 var DomoList = function DomoList(props) {
-  if (props.domo.length === 0) {
+  if (props.domos.length === 0) {
     return /*#__PURE__*/React.createElement("div", {
       className: "domoList"
     }, /*#__PURE__*/React.createElement("h3", {
